@@ -1,0 +1,18 @@
+FROM arm64v8/ros:humble
+
+ARG vscode
+RUN if [[ -z "$devcontainercli" ]] ; then \
+    printf "\nERROR: This Dockerfile needs to be built with VS Code !" && exit 1; \
+    else printf "VS Code is detected: $devcontainercli"; \
+fi
+
+USER root
+
+# Install packages
+RUN sudo apt-get update
+RUN sudo apt-get -y install python3-opencv
+RUN sudo apt-get -y install ros-humble-cv-bridge
+RUN sudo apt-get install -y python3-pip
+RUN pip install pyserial
+
+RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
