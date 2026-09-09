@@ -16,3 +16,4 @@ RUN sudo apt-get install -y python3-pip
 RUN pip install pyserial
 
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
+RUN echo "alias build='colcon build; source install/setup.bash'" >> ~/.bashrc
