@@ -17,6 +17,7 @@
 # they demonstrate how ROS 2 nodes communicate asynchronously using topics.
 
 import rclpy
+from rclpy.publisher import Publisher
 from rclpy.node import Node
 from std_msgs.msg import String
 
@@ -35,8 +36,8 @@ class Pub(Node):
     def __init__(self):
         super().__init__('pub')
 
-        # TODO: Create a publisher for String messages on the "topic" topic with a queue size of 10
-        # TODO: Create a timer that calls self.timer_callback every 1 second (1.0)
+        # DONE: Create a publisher for String messages on the "topic" topic with a queue size of 10
+        # DONE: Create a timer that calls self.timer_callback every 1 second (1.0)
 
         # create_timer:
         #   Creates a repeating callback based on a time interval.
@@ -44,7 +45,8 @@ class Pub(Node):
         #   - period_sec: float, time between callback invocations in seconds
         #   - callback: function to run each period
         #   Typical use: publish periodic sensor or status messages.
-        #
+        self.create_timer(1.0, self.timer_callback)
+        
         # create_publisher:
         #   Creates a publisher for a specific message type and topic.
         #   Usage: self.create_publisher(MessageType, 'topic_name', queue_size)
@@ -52,15 +54,21 @@ class Pub(Node):
         #   - 'topic_name': name of the ROS topic to publish to
         #   - queue_size: outgoing message queue size
         #   Typical use: send data to subscribers on the topic.
+        self.publisher: Publisher = self.create_publisher(String, "topic",  10)
+        
+        self.i = 0
 
     # Create a timer callback that publishes a message every second.
     # The callback should create a String message, set its data to "Message {i}!", 
     # where i is an incremented intenger, and publish it to the topic.
     def timer_callback(self):
-        # TODO: Create message object of type String
-        # TODO: Set its data attribute to "Message {i}!" where i is an incremented integer
-        # TODO: Publish the message using the publisher created in __init__
-        pass
+        # DONE: Create message object of type String
+        msg: String = String()
+        # DONE: Set its data attribute to "Message {i}!" where i is an incremented integer
+        msg.data = "Message {self.i}"
+        self.i += 1
+        # DONE: Publish the message using the publisher created in __init__
+        self.publisher.publish(msg)
 
 
 if __name__ == '__main__':

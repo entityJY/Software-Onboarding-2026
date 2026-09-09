@@ -19,6 +19,7 @@
 
 import rclpy
 from rclpy.node import Node
+from rclpy.subscription import Subscription
 from std_msgs.msg import String
 
 # ROS 2 boilerplate pattern:
@@ -49,6 +50,7 @@ class Sub(Node):
         #   - callback: function that handles incoming messages
         #   - qos: quality of service depth for the subscription queue
         #   Typical use: receive sensor updates, commands, or status messages.
+        self.subscriber: Subscription = self.create_subscription(String, "topic", self.listener_callback, 10)
 
     # Create a callback function that prints the received message.
     # The callback should accept a String message and log the data.
