@@ -65,7 +65,7 @@ class Pub(Node):
         # DONE: Create message object of type String
         msg: String = String()
         # DONE: Set its data attribute to "Message {i}!" where i is an incremented integer
-        msg.data = "Message {self.i}"
+        msg.data = f"Message {self.i}"
         self.i += 1
         # DONE: Publish the message using the publisher created in __init__
         self.publisher.publish(msg)
