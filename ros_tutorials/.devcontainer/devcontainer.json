@@ -12,6 +12,12 @@
       }
 	},
 
+	"runArgs": [
+		"--rm",
+		"--name",
+		"ros2"
+	],
+
 	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {
