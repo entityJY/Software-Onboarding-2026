@@ -54,8 +54,8 @@ class Sub(Node):
 
     # Create a callback function that prints the received message.
     # The callback should accept a String message and log the data.
-    def listener_callback(self, msg):
-        # TODO: Log the incoming message data
+    def listener_callback(self, msg: String):
+        # DONE: Log the incoming message data
 
         # self.get_logger():
         #   Returns the node's ROS logger, which is used for logging messages to
@@ -66,8 +66,7 @@ class Sub(Node):
         #   - error(): logs errors
         #   - debug(): logs debug-level messages when enabled
         #   Typical use: print received topic data and node status messages.
-        
-        pass
+        self.get_logger().info(msg.data)
 
 
 if __name__ == '__main__':
