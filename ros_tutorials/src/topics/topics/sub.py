@@ -69,9 +69,12 @@ class Sub(Node):
         self.get_logger().info(msg.data)
 
 
-if __name__ == '__main__':
+def main():
     rclpy.init()
     node = Sub()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
+    
+if __name__ == '__main__':
+    main()

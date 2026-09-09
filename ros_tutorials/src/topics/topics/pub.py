@@ -71,9 +71,12 @@ class Pub(Node):
         self.publisher.publish(msg)
 
 
-if __name__ == '__main__':
+def main():
     rclpy.init()
     node = Pub()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
