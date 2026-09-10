@@ -23,8 +23,8 @@ import rclpy
 from rclpy.node import Node
 
 # Service design:
-#   Request: min_value, max_value
-#   Response: random_number
+#   Request: min_value, max_value (int64)
+#   Response: random_number (int64)
 #
 # Here, import RandomNumber from the interfaces.srv module
 # RandomNumber is the custom Service type.
@@ -68,7 +68,7 @@ class ServiceServer(Node):
     # The callback should read the request values, generate a value between min and max (inclusive),
     # and return a response containing the generated number.
     def generate_random_number(self, request, response):
-        # TODO: Read request.min and request.max
+        # TODO: Read request.min_value and request.max_value
         # TODO: Generate a random integer in the requested range
         # TODO: Set response.random_number to the generated value
         # TODO: Return response

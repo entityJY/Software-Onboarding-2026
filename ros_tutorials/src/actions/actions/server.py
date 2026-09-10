@@ -23,10 +23,10 @@
 import rclpy
 from rclpy.node import Node
 
-# Example action design:
-#   Goal: duration (seconds)
+# Action design:
+#   Goal: seconds (float64)
 #   Result: success (bool)
-#   Feedback: remaining (duration)
+#   Feedback: remaining (float64)
 #
 # Here, import SleepFor from the interfaces.action module
 # SleepFor is the custom action type.
