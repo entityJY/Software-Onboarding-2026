@@ -28,6 +28,8 @@ from rclpy.node import Node
 #
 # Here, import RandomNumber from the interfaces.srv module
 # RandomNumber is the custom Service type.
+from interfaces.srv import RandomNumber
+import random
 
 # ROS 2 boilerplate pattern:
 # 1. Import rclpy and the base Node class.
@@ -44,9 +46,9 @@ class ServiceServer(Node):
     def __init__(self):
         super().__init__('service_server')
 
-        # TODO: Create a service for the random-number request/response type.
-        # TODO: Use a callback method such as self.generate_random_number
-        # TODO: Register the service under a topic name like 'generate_random_number'
+        # DONE: Create a service for the random-number request/response type.
+        # DONE: Use a callback method such as self.generate_random_number
+        # DONE: Register the service under a topic name like 'generate_random_number'
 
         # create_service:
         #   Creates a service server that waits for requests and invokes a callback.
@@ -56,28 +58,34 @@ class ServiceServer(Node):
         #   - callback: function that receives request and returns a response
         #   Typical use: handle operations such as calculations, data generation,
         #   or device control requests.
-        #
+        self.create_service(RandomNumber, "generate_random_number", self.generate_random_number)
+        
         # self.get_logger():
         #   Returns the node's ROS logger, used for printing status and debug output.
         #   Usage: self.get_logger().info('message')
         #   - info(): log informational messages
         #   - warn(): log warnings
         #   - error(): log errors
+        self.get_logger().info("generate_random_number service ready")
 
     # Create a service callback that generates a random number.
     # The callback should read the request values, generate a value between min and max (inclusive),
     # and return a response containing the generated number.
-    def generate_random_number(self, request, response):
-        # TODO: Read request.min and request.max
-        # TODO: Generate a random integer in the requested range
-        # TODO: Set response.random_number to the generated value
-        # TODO: Return response
+    def generate_random_number(self, request: RandomNumber.Request, response: RandomNumber.Response) -> RandomNumber.Response:
+        # DONE: Read request.min and request.max
+        # DONE: Generate a random integer in the requested range
+        # DONE: Set response.random_number to the generated value
+        # DONE: Return response
+        response.random_number = random.randint(request.min_value, request.max_value)
         return response
 
 
-if __name__ == '__main__':
+def main():
     rclpy.init()
     node = ServiceServer()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()

@@ -22,7 +22,8 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"donjayamanne.python-extension-pack"
+				"Ranch-Hand-Robotics.rde-pack",
+				"twxs.cmake"
 			]
 		}
 	}

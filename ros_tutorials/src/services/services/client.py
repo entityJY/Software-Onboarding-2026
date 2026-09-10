@@ -24,6 +24,7 @@ from rclpy.node import Node
 # 
 # Here, import RandomNumber from the interfaces.srv module
 # RandomNumber is the custom Service type.
+from interfaces.srv import RandomNumber
 
 # ROS 2 boilerplate pattern:
 # 1. Import rclpy and the base Node class.
@@ -40,9 +41,9 @@ class ServiceClient(Node):
     def __init__(self):
         super().__init__('service_client')
 
-        # TODO: Create a client for the random-number service
-        # TODO: Wait for the service to be available
-        # TODO: Create a request containing min and max values
+        # DONE: Create a client for the random-number service
+        # DONE: Wait for the service to be available
+        # DONE: Create a request containing min and max values
 
         # create_client:
         #   Creates a service client used to call a ROS service.
@@ -50,22 +51,33 @@ class ServiceClient(Node):
         #   - ServiceType: the ROS service class you defined in an .srv file
         #   - 'service_name': name of the service to call
         #   Typical use: request a computation, configuration, or value from a server.
-        #
+        self.client = self.create_client(RandomNumber, "generate_random_number")
+        
+        while not self.client.wait_for_service(1.0):
+            self.get_logger().info("Waiting for generate_random_number service to start")
+        
+        self.send_request()
+        
         # self.get_logger():
         #   Returns the node's ROS logger, used to print request/response details.
         #   Usage: self.get_logger().info('message')
 
     # Create a method that sends the service request.
     def send_request(self):
-        # TODO: Build a request object with a min and max range
-        # TODO: Call the service and wait for a response
+        # DONE: Build a request object with a min and max range
+        req = RandomNumber.Request(min_value=0, max_value=100)
+        # DONE: Call the service and wait for a response
+        res: RandomNumber.Response = self.client.call(req)
         # TODO: Log the returned random number
-        pass
+        self.get_logger().info(f"Random number generated is: {res.random_number}")
 
 
-if __name__ == '__main__':
+def main():
     rclpy.init()
     node = ServiceClient()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
