@@ -23,8 +23,8 @@ import rclpy
 from rclpy.node import Node
 
 # Service design:
-#   Request: min_value, max_value
-#   Response: random_number
+#   Request: min_value, max_value (int64)
+#   Response: random_number (int64)
 #
 # Here, import RandomNumber from the interfaces.srv module
 # RandomNumber is the custom Service type.
