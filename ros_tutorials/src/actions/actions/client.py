@@ -17,6 +17,8 @@
 
 import rclpy
 from rclpy.node import Node
+from rclpy.action.client import ActionClient, ClientGoalHandle
+from rclpy.task import Future
 
 # Action design:
 #   Goal: seconds (float64)
@@ -25,6 +27,7 @@ from rclpy.node import Node
 # 
 # Here, import SleepFor from the interfaces.action module
 # SleepFor is the custom action type.
+from interfaces.action import SleepFor
 
 # ROS 2 boilerplate pattern:
 # 1. Import rclpy and the base Node class.
@@ -37,13 +40,13 @@ from rclpy.node import Node
 # This pattern is the standard starting point for most ROS 2 Python nodes.
 
 
-class ActionClient(Node):
+class SleepActionClient(Node):
     def __init__(self):
         super().__init__('action_client')
 
-        # TODO: Create an action client for the SleepFor action type.
-        # TODO: Wait until the action server is available.
-        # TODO: Construct a goal with a duration value.
+        # DONE: Create an action client for the SleepFor action type.
+        # DONE: Wait until the action server is available.
+        # DONE: Construct a goal with a duration value.
 
         # create_client:
         #   Creates an action client used to send goals to a ROS action server.
@@ -51,21 +54,61 @@ class ActionClient(Node):
         #   - ActionType: the ROS action class you defined in an .action file
         #   - 'action_name': name of the action server to call
         #   Typical use: request a long-running task such as movement or timed work.
-        #
+        self._client = ActionClient(
+            self,
+            SleepFor,
+            'sleep_for',
+        )
+        
         # self.get_logger():
         #   Returns the node's ROS logger, used to print progress and results.
+        self.get_logger().info("Sending goal")
+        self.send_goal()
 
     # Create a method that sends the action goal.
     def send_goal(self):
-        # TODO: Build a goal request with a sleep duration.
-        # TODO: Send the goal to the action server.
-        # TODO: Handle feedback and wait for the final result.
-        pass
+        # DONE: Build a goal request with a sleep duration.
+        goal_req = SleepFor.Goal()
+        goal_req.seconds = 5.5
+        # DONE: Send the goal to the action server.
+        self._client.wait_for_server()
+        future = self._client.send_goal_async(goal_req, self.goal_feedback)
+        future.add_done_callback(self.response_feedback)
+        # DONE: Handle feedback and wait for the final result.
+    
+    def goal_feedback(self, feedback_msg):
+        feedback: SleepFor.Feedback = feedback_msg.feedback
+        self.get_logger().info(f"Seconds remaining in sleep: {feedback.remaining}")
+    
+    def response_feedback(self, future: Future):
+        goal_handle = future.result()
+        assert isinstance(goal_handle, ClientGoalHandle)
+        
+        if not goal_handle.accepted:
+            self.get_logger().info("Goal rejected")
+            return
+        self.get_logger().info("Goal accepted")
+        
+        result: Future = goal_handle.get_result_async()
+        result.add_done_callback(self.result_feedback)
+    
+    def result_feedback(self, future: Future):
+        res = future.result()
+        assert res is not None
+        result: SleepFor.Result = res.result
+        
+        if result.success:
+            self.get_logger().info("Goal completed")
+            return
+        self.get_logger().info("Goal failed")
 
 
-if __name__ == '__main__':
+def main():
     rclpy.init()
-    node = ActionClient()
+    node = SleepActionClient()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
