@@ -17,3 +17,4 @@ RUN pip install pyserial
 
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
 RUN echo "alias build='colcon build; source install/setup.bash'" >> ~/.bashrc
+RUN echo "alias setup='source install/setup.bash'" >> ~/.bashrc
