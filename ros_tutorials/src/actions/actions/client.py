@@ -76,7 +76,7 @@ class SleepActionClient(Node):
         future.add_done_callback(self.response_feedback)
         # DONE: Handle feedback and wait for the final result.
     
-    def goal_feedback(self, feedback_msg):
+    def goal_feedback(self, feedback_msg: SleepFor.Impl.FeedbackMessage):
         feedback: SleepFor.Feedback = feedback_msg.feedback
         self.get_logger().info(f"Seconds remaining in sleep: {feedback.remaining}")
     
@@ -94,7 +94,7 @@ class SleepActionClient(Node):
     
     def result_feedback(self, future: Future):
         res = future.result()
-        assert res is not None
+        assert isinstance(res, SleepFor.Impl.GetResultService.Response)
         result: SleepFor.Result = res.result
         
         if result.success:
