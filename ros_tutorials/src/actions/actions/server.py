@@ -21,7 +21,7 @@
 # with progress updates.
 
 import rclpy
-from rclpy.action.server import ActionServer, ServerGoalHandle, GoalResponse
+from rclpy.action.server import ActionServer, ServerGoalHandle
 from rclpy.node import Node
 from rclpy.duration import Duration
 
