@@ -17,8 +17,7 @@
 
 import rclpy
 from rclpy.node import Node
-from rclpy.action.client import ActionClient, ClientGoalHandle
-from rclpy.task import Future
+from rclpy.action.client import ClientGoalHandle
 
 # Action design:
 #   Goal: seconds (float64)
@@ -28,7 +27,7 @@ from rclpy.task import Future
 # Here, import SleepFor from the interfaces.action module
 # SleepFor is the custom action type.
 from interfaces.action import SleepFor
-from actions.client_helper import goal_feedback, response_feedback, result_feedback
+from actions.client_helper import ActionClientHelper
 
 # ROS 2 boilerplate pattern:
 # 1. Import rclpy and the base Node class.
@@ -55,10 +54,14 @@ class SleepActionClient(Node):
         #   - ActionType: the ROS action class you defined in an .action file
         #   - 'action_name': name of the action server to call
         #   Typical use: request a long-running task such as movement or timed work.
-        self._client = ActionClient(
+        
+        self.client = ActionClientHelper(
             self,
             SleepFor,
             'sleep_for',
+            self.response_feedback,
+            self.goal_feedback,
+            self.result_feedback,
         )
         
         # self.get_logger():
@@ -71,32 +74,27 @@ class SleepActionClient(Node):
         # DONE: Build a goal request with a sleep duration.
         goal_req = SleepFor.Goal()
         goal_req.seconds = 5.5
+        self.client.send_goal(goal_req)
         # DONE: Send the goal to the action server.
-        self._client.wait_for_server()
-        future = self._client.send_goal_async(goal_req, self.goal_feedback)
-        future.add_done_callback(self.response_feedback)
         # DONE: Handle feedback and wait for the final result.
     
-    @goal_feedback
+    # @goal_feedback
     def goal_feedback(self, feedback: SleepFor.Feedback) -> None:
         self.get_logger().info(f"Seconds remaining in sleep: {feedback.remaining}")
     
-    @response_feedback
+    # @response_feedback
     def response_feedback(self, goal_handle: ClientGoalHandle):
         if not goal_handle.accepted:
             self.get_logger().info("Goal rejected")
-            return
-        self.get_logger().info("Goal accepted")
-        
-        result: Future = goal_handle.get_result_async()
-        result.add_done_callback(self.result_feedback)
+        else:
+            self.get_logger().info("Goal accepted")
     
-    @result_feedback
+    # @result_feedback
     def result_feedback(self, result: SleepFor.Result):
         if result.success:
             self.get_logger().info("Goal completed")
-            return
-        self.get_logger().info("Goal failed")
+        else:
+            self.get_logger().info("Goal failed")
 
 
 def main():
