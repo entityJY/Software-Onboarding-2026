@@ -28,6 +28,7 @@ from rclpy.task import Future
 # Here, import SleepFor from the interfaces.action module
 # SleepFor is the custom action type.
 from interfaces.action import SleepFor
+from actions.client_helper import goal_feedback, response_feedback, result_feedback
 
 # ROS 2 boilerplate pattern:
 # 1. Import rclpy and the base Node class.
@@ -76,14 +77,12 @@ class SleepActionClient(Node):
         future.add_done_callback(self.response_feedback)
         # DONE: Handle feedback and wait for the final result.
     
-    def goal_feedback(self, feedback_msg: SleepFor.Impl.FeedbackMessage):
-        feedback: SleepFor.Feedback = feedback_msg.feedback
+    @goal_feedback
+    def goal_feedback(self, feedback: SleepFor.Feedback) -> None:
         self.get_logger().info(f"Seconds remaining in sleep: {feedback.remaining}")
     
-    def response_feedback(self, future: Future):
-        goal_handle = future.result()
-        assert isinstance(goal_handle, ClientGoalHandle)
-        
+    @response_feedback
+    def response_feedback(self, goal_handle: ClientGoalHandle):
         if not goal_handle.accepted:
             self.get_logger().info("Goal rejected")
             return
@@ -92,11 +91,8 @@ class SleepActionClient(Node):
         result: Future = goal_handle.get_result_async()
         result.add_done_callback(self.result_feedback)
     
-    def result_feedback(self, future: Future):
-        res = future.result()
-        assert isinstance(res, SleepFor.Impl.GetResultService.Response)
-        result: SleepFor.Result = res.result
-        
+    @result_feedback
+    def result_feedback(self, result: SleepFor.Result):
         if result.success:
             self.get_logger().info("Goal completed")
             return
