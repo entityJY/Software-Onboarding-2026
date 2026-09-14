@@ -58,10 +58,7 @@ class SleepActionClient(Node):
         self.client = ActionClientHelper(
             self,
             SleepFor,
-            'sleep_for',
-            self.response_feedback,
-            self.goal_feedback,
-            self.result_feedback,
+            'sleep_for'
         )
         
         # self.get_logger():
@@ -74,7 +71,12 @@ class SleepActionClient(Node):
         # DONE: Build a goal request with a sleep duration.
         goal_req = SleepFor.Goal()
         goal_req.seconds = 5.5
-        self.client.send_goal(goal_req)
+        self.client.send_goal(
+            goal_req,
+            self.response_feedback,
+            self.goal_feedback,
+            self.result_feedback
+        )
         # DONE: Send the goal to the action server.
         # DONE: Handle feedback and wait for the final result.
     
