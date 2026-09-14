@@ -38,7 +38,7 @@ class ActionClientHelper():
         result_feedback_callback: Optional[Callable[[Result], None]] = None
     ) -> None:
         if not isinstance(goal, self._goal_type):
-            self._node.get_logger().error(f"Sent goal type does not match expected goal type! Expected {self._goal_type} but got {type(goal)}")
+            self._node.get_logger().error(f"ActionClientHelper: Sent goal type does not match expected goal type! Expected {self._goal_type} but got {type(goal)}")
             return
         self.client.wait_for_server()
         future = self.client.send_goal_async(goal, lambda msg: self._goal_feedback(msg, goal_feedback_callback))
@@ -52,7 +52,7 @@ class ActionClientHelper():
         goal_handle = future.result()
         
         if goal_handle is None:
-            self._node.get_logger().error("Future returned from sending goal is None!")
+            self._node.get_logger().error("ActionClientHelper: Future returned from sending goal is None!")
             return
         assert isinstance(goal_handle, ClientGoalHandle)
         
@@ -71,7 +71,7 @@ class ActionClientHelper():
         res = future.result()
         
         if res is None:
-            self._node.get_logger().error("Future returned from getting result is None!")
+            self._node.get_logger().error("ActionClientHelper: Future returned from getting result is None!")
             return
         assert res is not None
         
