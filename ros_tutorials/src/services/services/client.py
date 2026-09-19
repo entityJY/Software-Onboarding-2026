@@ -17,6 +17,7 @@
 
 import rclpy
 from rclpy.node import Node
+from rclpy.task import Future
 
 # Service design:
 #   Request: min_value, max_value
@@ -67,8 +68,14 @@ class ServiceClient(Node):
         # DONE: Build a request object with a min and max range
         req = RandomNumber.Request(min_value=0, max_value=100)
         # DONE: Call the service and wait for a response
-        res: RandomNumber.Response = self.client.call(req)
-        # TODO: Log the returned random number
+        future: Future = self.client.call_async(req)
+        future.add_done_callback(self.process_result)
+        
+        # DONE: Log the returned random number
+    
+    def process_result(self, future: Future):
+        res = future.result()
+        assert isinstance(res, RandomNumber.Response)
         self.get_logger().info(f"Random number generated is: {res.random_number}")
 
 
