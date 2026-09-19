@@ -21,6 +21,13 @@
 	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {
+			"settings": {
+				"files.exclude": {
+					"build/": true,
+					"install/": true,
+					"log/": true
+				}
+			},
 			"extensions": [
 				"Ranch-Hand-Robotics.rde-pack",
 				"twxs.cmake"
